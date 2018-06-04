@@ -26,6 +26,10 @@ public:
 		return points;
 	}
 
+	void addPoints(int points_in) {
+		points += points_in;
+	}
+
 	virtual void getDice(vector<int>& roll_in) = 0;
 };
 
