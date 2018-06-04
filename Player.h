@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -14,11 +16,12 @@ protected:
 	vector<int> roll;
 
 public:
+
 	Player()
-		:name(""), style(""), points(0) {}
+		:name(""), style(""), points(0), roll(6, 0) {}
 
 	Player(string name_in, string style_in)
-		:name(name_in), style(style_in), points(0) {}
+		:name(name_in), style(style_in), points(0), roll(6, 0) {}
 
 	string getName() {
 		return name;
@@ -28,13 +31,34 @@ public:
 		return points;
 	}
 
-	void roll() {
+	void rollDice() {
+		int x;
+		for (int i = 0; i < 6; i++) {
+			x = (rand() % 6) + 1;
+			roll[i] = x;
+		}
 	}
 
-	virtual void 
+	virtual void getDice(string& input) = 0;
+};
 
+class Human : public Player {
+
+public:
+
+	Human() : Player() {}
+
+	Human(string name_in) : Player(name_in, "human") {}
+
+	virtual void getDice(string& input) {
+
+		
+		
+	}
 
 };
+
+
 
 
 #endif PLAYER_H
