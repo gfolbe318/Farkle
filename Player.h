@@ -11,17 +11,16 @@ using namespace std;
 class Player {
 protected:
 	string name;
-	string style;
 	int points;
 	vector<int> roll;
 
 public:
 
 	Player()
-		:name(""), style(""), points(0), roll(6, 0) {}
+		:name(""), points(0), roll(6, 0) {}
 
-	Player(string name_in, string style_in)
-		:name(name_in), style(style_in), points(0), roll(6, 0) {}
+	Player(string name_in)
+		:name(name_in), points(0), roll(6, 0) {}
 
 	string getName() {
 		return name;
@@ -39,23 +38,30 @@ public:
 		}
 	}
 
-	virtual void getDice(string& input) = 0;
+	virtual void getDice() = 0;
 };
 
 class Human : public Player {
 
 public:
 
-	Human() : Player() {}
+	Human() : Player(){}
 
-	Human(string name_in) : Player(name_in, "human") {}
+	Human(string name_in) : Player(name_in) {}
 
-	virtual void getDice(string& input) {
+	virtual void getDice() {
 
-		
-		
+	
 	}
 
+};
+
+class Computer : public Player {
+public:
+
+	Computer() : Player("Computer") {}
+
+	virtual void getDice(){}
 };
 
 

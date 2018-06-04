@@ -1,3 +1,4 @@
 ﻿  main.cpp
 c:\users\gmfol\desktop\indproj\farkle\farkle\main.cpp(9): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\gmfol\desktop\indproj\farkle\farkle\main.cpp(45): warning C4930: 'Human playerTwo(void)': prototyped function not called (was a variable definition intended?)
   Farkle.vcxproj -> C:\Users\gmfol\Desktop\IndProj\Farkle\Debug\Farkle.exe
