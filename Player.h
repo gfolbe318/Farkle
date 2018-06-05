@@ -12,6 +12,9 @@ struct info {
 	int numPoints;
 	bool goodInput;
 
+	info()
+		:dice(6, 0), numPoints(0) {}
+
 	info(string input_in, int numPoints_in, bool goodInput_in)
 		:dice(6, 0), input(input_in), numPoints(numPoints_in), goodInput(goodInput_in) {}
 };
@@ -20,6 +23,7 @@ struct pointHelper {
 	int number;
 	int count;
 };
+
 
 class Player {
 protected:
@@ -245,7 +249,7 @@ public:
 		int initialDice = info_in.dice.size();
 		info_in.dice.resize(initialDice - numDiceRemoved);
 
-		info_in.selected.clear();
+		info_in.selected.resize(0);
 
 		return points;
 	}
@@ -424,8 +428,72 @@ public:
 	Computer() : Player("Computer") {}
 
 	virtual void getDice() {
-		cout << "ADSFPISDABIFHNDSIPFHADSPIFHASDPF" << endl;
+		info info_in;
+
+		bool stop = false;
+
+		int currentTurnPoints = 0;
+
+		
+		do {
+			rollDice(info_in);
+			printRoll(info_in.dice);
+
+			stop = isFarkle(info_in.dice);
+
+			if (stop) {
+				cout << "Farkle! You earn 0 points for this roll. " << endl << endl;
+				stop = true;
+			}
+
+			else {
+				do {
+					pointHelper p{ 0, 0 };
+
+					vector<pointHelper> bucketSortDice;
+
+					for (size_t i = 1; i < 7; i++) {
+						for (size_t j = 0; j < info_in.selected.size(); j++) {
+							p.number = i;
+							if (info_in.dice[info_in.selected[j] - 1] == i) {
+								p.count++;
+							}
+						}
+						bucketSortDice.push_back(p);
+						p.count = 0;
+					}
+
+
+
+
+				if (currentTurnPoints >= 300) {
+
+					//bank option
+					bool bank = false;
+					if (bank) {
+						addPoints(currentTurnPoints);
+						cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
+						stop = true;
+					}
+				}
+			}
+
+			if (diceSelection.dice.size() == 0) {
+				diceSelection.dice.resize(6);
+			}
+
+			if (stop == false) {
+				cout << "Rolling again..." << endl;
+			}
+
+		} while (!stop);
+
 	}
+
+
+	}
+
+	
 };
 
 
