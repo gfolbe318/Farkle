@@ -11,6 +11,7 @@ const int NUM_PLAYERS = 2;
 
 struct info {
 	vector<int> dice;
+	vector<int> selected;
 	string input;
 	int numPoints;
 	bool goodInput;
@@ -19,9 +20,14 @@ struct info {
 		:dice(6, 0), input(input_in), numPoints(numPoints_in), goodInput(goodInput_in) {}
 };
 
+struct pointHelper {
+	int number;
+	int count;
+};
+
 info isValidSelection(info& info_in);
 
-int getPoints(vector<int>& vec);
+int getPoints(info& info_in);
 
 class Game {
 private:
@@ -125,6 +131,7 @@ public:
 
 			else {
 				do {
+					cout << "Current points this turn: " << diceSelection.numPoints << endl;
 
 					cout << "Please enter the dice you wish to bank";
 					if (diceSelection.numPoints > 300) {
@@ -261,10 +268,14 @@ info isValidSelection(info& info_in) {
 
 	size_t length = input.length();
 	for (size_t i = 0; i < length; i++) {
+
+		char current = input[i];
+
 		if ((i + 1) % 3 == 0) {
-			if (input[i] != ' ') {
+			if (current != ' ') {
 				cout << "Invalid input. Spacing error" << endl;
 				info_in.goodInput = false;
+				info_in.dice.clear();
 				return info_in;
 			}
 		}
@@ -272,37 +283,84 @@ info isValidSelection(info& info_in) {
 			if (!isdigit(input[0])) {
 				cout << "Error, invalid input" << endl;
 				info_in.goodInput = false;
+				info_in.dice.clear();
 				return info_in;
 			}
-			else if ((input[0] - '0' > numDice)) {
-				cout << "Error, cannot bank die # " << input[0] << endl;
+			else if ((current - '0' > numDice)) {
+				cout << "Error, cannot bank die # " << current << endl;
 				info_in.goodInput = false;
+				info_in.dice.clear();
 				return info_in;
 			}
 			else {
-				info_in.dice.push_back(input[0] - '0');
+				size_t initialSize = info_in.selected.size();
+				for (size_t j = 0; j < initialSize; j++) {
+					if (current - '0' == info_in.selected[j]) {
+						cout << "Error, you have selected the same die twice" << endl;
+						info_in.goodInput = false;
+						info_in.dice.clear();
+						info_in.selected.clear();
+						return info_in;
+					}
+				}
+				info_in.selected.push_back(current - '0');
 			}
 		}
 
 		else if ((i + 2) % 3 == 0) {
-			if (input[i] != ',') {
+			if (current != ',') {
 				cout << "Error, invalid input" << endl;
 				info_in.goodInput = false;
+				info_in.dice.clear();
 				return info_in;
 			}
 		}
 		else {
 			cout << "Error, invalid input" << endl;
 			info_in.goodInput = false;
+			info_in.dice.clear();
 			return info_in;
 		}
 	}
+
+	int pointsFromRoll = getPoints(info_in);
 
 	info_in.goodInput = true;
 
 	return info_in;
 }
 
-int getPoints(vector<int>& vec) {
-	return 0;
+int getPoints(info& info_in) {
+
+	int points = 0;
+
+	pointHelper p{ 0, 0 };
+
+	vector<pointHelper> selectedDice;
+
+	for (size_t i = 1; i < 7; i++) {
+		for (size_t j = 0; j < info_in.selected.size(); j++) {
+			int x = info_in.dice[info_in.selected[j] - 1];
+			p.number = i;
+			if (info_in.dice[info_in.selected[j] - 1] == i) {
+				p.count++;
+			}
+		}
+		if (p.count > 0) {
+			selectedDice.push_back(p);
+		}
+		p.count = 0;
+	}
+
+	if (selectedDice.size() == 6) {
+		points += 1250;
+		return points;
+	}
+
+	else {
+
+	}
+
+
+	return -1;
 }
