@@ -113,9 +113,7 @@ int main() {
 
 	} while (playerVector[0]->getScore() < 10000 && playerVector[1]->getScore() < 10000);
 
-
-
-
+	
 	return 0;
 }
 
