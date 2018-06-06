@@ -4,6 +4,8 @@
 #include <string>
 #include <algorithm>
 #include <deque>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -275,7 +277,7 @@ public:
 
 
 		else if (!isdigit(input[0])) {
-			cout << "Error, invalid input " << input[0] << endl;
+			cout << "Error, invalid input ";
 			info_in.goodInput = false;
 			return;
 		}
@@ -454,6 +456,9 @@ public:
 				break;
 			}
 
+			chrono::seconds dura(1);
+			this_thread::sleep_for(dura);
+
 			rollDice(info_in);
 			printRoll(info_in.dice);
 
@@ -467,6 +472,11 @@ public:
 			}
 
 			else {
+
+				cout << "Computer is thinking..." << endl << endl;
+				chrono::seconds dura(2);
+				this_thread::sleep_for(dura);
+				
 				makeDecision(info_in);
 
 				currentTurnPoints += info_in.numPoints;

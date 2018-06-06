@@ -111,7 +111,7 @@ int main() {
 		farkle.printScore();
 		farkle.runTurn();
 
-	} while (playerVector[0]->getScore() < 2000 && playerVector[1]->getScore() < 2000);
+	} while (playerVector[0]->getScore() < 5000 && playerVector[1]->getScore() < 5000);
 
 	//last chance mode!
 
