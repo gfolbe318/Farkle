@@ -9,7 +9,7 @@
 
 using namespace std;
 
-const int POINTSFORWIN = 2000;
+const int POINTSFORWIN = 10000;
 
 struct info {
 	vector<int> dice;
@@ -72,6 +72,9 @@ public:
 	}
 
 	void rollDice(info& info_in) {
+
+		chrono::seconds dura(1);
+		this_thread::sleep_for(dura);
 
 		for (size_t i = 0; i < info_in.dice.size(); i++) {
 			info_in.dice[i] = (rand() % 6) + 1;
@@ -399,22 +402,25 @@ public:
 
 				string bankInput;
 
-				if (currentTurnPoints >= 300 && leadingScore < POINTSFORWIN && getScore() + currentTurnPoints > leadingScore) {
+				if (currentTurnPoints >= 300) {
+						
+					if (leadingScore < POINTSFORWIN || getScore() + currentTurnPoints > leadingScore) {
 
-					do {
+						do {
 
-						cout << "Would you like to bank? Type \"Bank\" to bank " << currentTurnPoints << " points, or \"No\" to continue: ";
-						getline(cin, bankInput);
+							cout << "Would you like to bank? Type \"Bank\" to bank " << currentTurnPoints << " points, or \"No\" to continue: ";
+							getline(cin, bankInput);
 
-						if (bankInput != "Bank" && bankInput != "bank" && bankInput != "No" && bankInput != "no") {
-							cout << "Error, invalid input" << endl;
+							if (bankInput != "Bank" && bankInput != "bank" && bankInput != "No" && bankInput != "no") {
+								cout << "Error, invalid input" << endl;
+							}
+						} while (bankInput != "Bank" && bankInput != "bank" && bankInput != "No" && bankInput != "no");
+
+						if (bankInput == "Bank" || bankInput == "bank") {
+							addPoints(currentTurnPoints);
+							cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
+							stop = true;
 						}
-					} while (bankInput != "Bank" && bankInput != "bank" && bankInput != "No" && bankInput != "no");
-
-					if (bankInput == "Bank" || bankInput == "bank") {
-						addPoints(currentTurnPoints);
-						cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
-						stop = true;
 					}
 				}
 			}
@@ -450,18 +456,16 @@ public:
 
 		do {
 
-			if (leadingScore < POINTSFORWIN && 
-				getScore() + currentTurnPoints > leadingScore &&
-				(currentTurnPoints > 1000 && info_in.dice.size() <= 3) ||
+			if ((currentTurnPoints > 1000 && info_in.dice.size() <= 3) ||
 				(currentTurnPoints > 300 && info_in.dice.size() <= 2)) {
 
-				cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
-				addPoints(currentTurnPoints);
-				break;
-			}
+				if (leadingScore < POINTSFORWIN || getScore() + currentTurnPoints > leadingScore) {
 
-			chrono::seconds dura(1);
-			this_thread::sleep_for(dura);
+					cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
+					addPoints(currentTurnPoints);
+					break;
+				}
+			}
 
 			rollDice(info_in);
 			printRoll(info_in.dice);

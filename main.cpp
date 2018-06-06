@@ -49,10 +49,6 @@ public:
 		updateTurn();
 	}
 
-	Player* getCurrentPlayer() {
-		return currentRoller;
-	}
-
 	int getWinningScore() {
 		if (one->getScore() > two->getScore()) {
 			return one->getScore();
