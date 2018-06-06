@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include <string>
+#include <algorithm>
+#include <deque>
 
 using namespace std;
 
@@ -170,6 +172,7 @@ public:
 		if (straight) {
 			points += 1250;
 			cout << "Straight!" << endl;
+			info_in.selected.resize(0);
 			return points;
 		}
 
@@ -181,6 +184,8 @@ public:
 
 		int numOnes = 0;
 		int numFives = 0;
+
+		bool threePair = false;
 
 		for (int i = 0; i < selectedDice.size(); i++) {
 
@@ -213,6 +218,7 @@ public:
 		if (numThreeOfKinds == 2) {
 			cout << "Double triples!" << endl;
 			numDiceRemoved = 6;
+			info_in.selected.resize(0);
 			return 1500;
 		}
 
@@ -222,7 +228,7 @@ public:
 				points += 1000;
 			}
 			else {
-				points += numOnDie * 100;
+				points += (numOnDie * 100);
 			}
 
 			numDiceRemoved = 3;
@@ -232,15 +238,16 @@ public:
 			cout << "Three pairs!" << endl;
 			points += 1500;
 			numDiceRemoved = 6;
+			threePair = true;
 		}
 
-		if (selectedDice[0].count < 3) {
+		if (selectedDice[0].count < 3 && !threePair) {
 			numOnes += selectedDice[0].count;
 			numDiceRemoved += numOnes;
 			points += (100 * numOnes);
 		}
 
-		if (selectedDice[4].count < 3) {
+		if (selectedDice[4].count < 3 && !threePair) {
 			numFives += selectedDice[4].count;
 			numDiceRemoved += numFives;
 			points += (50 * numFives);
@@ -402,7 +409,7 @@ public:
 
 					if (bankInput == "Bank" || bankInput == "bank") {
 						addPoints(currentTurnPoints);
-						cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;;
+						cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
 						stop = true;
 					}
 				}
@@ -423,6 +430,9 @@ public:
 };
 
 class Computer : public Player {
+
+private:
+
 public:
 
 	Computer() : Player("Computer") {}
@@ -434,70 +444,203 @@ public:
 
 		int currentTurnPoints = 0;
 
-		
 		do {
+
+			if ((currentTurnPoints > 1000 && info_in.dice.size() <= 3) ||
+				(currentTurnPoints > 300 && info_in.dice.size() <= 2)) {
+
+				cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
+				addPoints(currentTurnPoints);
+				break;
+			}
+
 			rollDice(info_in);
 			printRoll(info_in.dice);
+
+			cout << endl << "Current points this turn: " << currentTurnPoints << endl;
 
 			stop = isFarkle(info_in.dice);
 
 			if (stop) {
-				cout << "Farkle! You earn 0 points for this roll. " << endl << endl;
+				cout << "Farkle! Computer earns 0 points for this roll. " << endl << endl;
 				stop = true;
 			}
 
 			else {
-				do {
-					pointHelper p{ 0, 0 };
+				makeDecision(info_in);
 
-					vector<pointHelper> bucketSortDice;
+				currentTurnPoints += info_in.numPoints;
+			}
 
-					for (size_t i = 1; i < 7; i++) {
-						for (size_t j = 0; j < info_in.selected.size(); j++) {
-							p.number = i;
-							if (info_in.dice[info_in.selected[j] - 1] == i) {
-								p.count++;
-							}
-						}
-						bucketSortDice.push_back(p);
-						p.count = 0;
+			if (info_in.dice.size() == 0) {
+				info_in.dice.resize(6);
+			}
+
+			info_in.numPoints = 0;
+
+		} while (!stop);
+	}
+
+	void printSelected(vector<int>& vec) {
+		cout << "Computer selected dice # ";
+		sort(vec.begin(), vec.end());
+		for (auto i : vec) {
+			cout << i << " ";
+		}
+		cout << endl;
+	}
+
+	void makeDecision(info& info_in) {
+
+		vector<int> selectedDice;
+		vector<int> store;
+
+		pointHelper p{ 0, 0 };
+
+		vector<pointHelper> buckets;
+
+		for (size_t i = 1; i < 7; i++) {
+			for (size_t j = 0; j < info_in.dice.size(); j++) {
+				p.number = i;
+				if (info_in.dice[j] == i) {
+					p.count++;
+				}
+			}
+			buckets.push_back(p);
+			p.count = 0;
+		}
+
+		string scoreMessage = "";
+
+		bool straight = true;
+		for (int i = 0; i < 6; i++) {
+			if (buckets[i].count != 1) {
+				straight = false;
+			}
+		}
+		if (straight) {
+			info_in.numPoints = 1250;
+			scoreMessage = "Straight!";
+			store = { 1,2,3,4,5,6 };
+		}
+
+		int numFiveOfKinds = 0;
+		int numFourOfKinds = 0;
+		int numThreeOfKinds = 0;
+		int numPairs = 0;
+		int numOnDie = 0;
+
+		int numOnes = 0;
+		int numFives = 0;
+
+		bool threePair = false;
+
+		if (!straight) {
+			for (int i = 0; i < buckets.size(); i++) {
+
+				if (buckets[i].count == 5) {
+					numFiveOfKinds++;
+					numOnDie = buckets[i].number;
+					scoreMessage = "Five of a kind!";
+					info_in.numPoints += 2000;
+
+					for (int i = 0; i < 5; i++) {
+						selectedDice.push_back(numOnDie);
 					}
 
+				}
 
+				if (buckets[i].count == 4) {
+					numFourOfKinds++;
+					numOnDie = buckets[i].number;
+					scoreMessage = "Four of a kind!";
+					info_in.numPoints += 1500;
 
-
-				if (currentTurnPoints >= 300) {
-
-					//bank option
-					bool bank = false;
-					if (bank) {
-						addPoints(currentTurnPoints);
-						cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
-						stop = true;
+					for (int i = 0; i < 4; i++) {
+						selectedDice.push_back(numOnDie);
 					}
+				}
+
+				if (buckets[i].count == 3) {
+					numThreeOfKinds++;
+					numOnDie = buckets[i].number;
+				}
+
+				if (buckets[i].count == 2) {
+					numPairs++;
 				}
 			}
 
-			if (diceSelection.dice.size() == 0) {
-				diceSelection.dice.resize(6);
+			if (numThreeOfKinds == 2) {
+				scoreMessage = "Double Triples!";
+				store = { 1,2,3,4,5,6 };
+				info_in.numPoints += 1500;
 			}
 
-			if (stop == false) {
-				cout << "Rolling again..." << endl;
+			else if (numThreeOfKinds == 1) {
+				scoreMessage = "Three of a kind!";
+				if (numOnDie == 1) {
+					info_in.numPoints += 1000;
+				}
+				else {
+					info_in.numPoints += (numOnDie * 100);
+				}
+
+				for (int i = 0; i < 3; i++) {
+					selectedDice.push_back(numOnDie);
+				}
 			}
 
-		} while (!stop);
+			else if (numPairs == 3) {
+				scoreMessage = "Three pairs!";
+				info_in.numPoints += 1500;
+				store = { 1,2,3,4,5,6 };
+				threePair = true;
+			}
 
+			if (buckets[0].count < 3 && !threePair) {
+				numOnes += buckets[0].count;
+				info_in.numPoints += (100 * numOnes);
+
+				for (int i = 0; i < buckets[0].count; i++) {
+					selectedDice.push_back(1);
+				}
+			}
+
+			if (buckets[4].count < 3 && !threePair) {
+				numFives += buckets[4].count;
+				info_in.numPoints += (50 * numFives);
+
+				for (int i = 0; i < buckets[4].count; i++) {
+					selectedDice.push_back(5);
+				}
+			}
+
+			bool hasBeenSeen = false;
+
+			for (int i = 0; i < selectedDice.size(); i++) {
+				for (int j = 0; j < info_in.dice.size(); j++) {
+					if (selectedDice[i] == info_in.dice[j]) {
+						if (find(store.begin(), store.end(), j + 1) == store.end() || store.empty()) {
+							store.push_back(j + 1);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+
+		size_t initial_size = info_in.dice.size();
+
+		printSelected(store);
+
+		if (scoreMessage != "") {
+			cout << scoreMessage << endl;
+		}
+
+		info_in.dice.resize(initial_size - store.size());
 	}
 
-
-	}
-
-	
 };
-
-
-
-
 #endif PLAYER_H
-

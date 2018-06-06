@@ -1,5 +1,8 @@
 ﻿  main.cpp
-c:\users\gmfol\desktop\indproj\farkle\farkle\player.h(103): warning C4018: '<': signed/unsigned mismatch
-c:\users\gmfol\desktop\indproj\farkle\farkle\player.h(184): warning C4018: '<': signed/unsigned mismatch
+c:\users\gmfol\desktop\indproj\farkle\farkle\player.h(106): warning C4018: '<': signed/unsigned mismatch
+c:\users\gmfol\desktop\indproj\farkle\farkle\player.h(190): warning C4018: '<': signed/unsigned mismatch
+c:\users\gmfol\desktop\indproj\farkle\farkle\player.h(539): warning C4018: '<': signed/unsigned mismatch
+c:\users\gmfol\desktop\indproj\farkle\farkle\player.h(621): warning C4018: '<': signed/unsigned mismatch
+c:\users\gmfol\desktop\indproj\farkle\farkle\player.h(622): warning C4018: '<': signed/unsigned mismatch
 c:\users\gmfol\desktop\indproj\farkle\farkle\main.cpp(58): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Farkle.vcxproj -> C:\Users\gmfol\Desktop\IndProj\Farkle\Debug\Farkle.exe
