@@ -450,7 +450,8 @@ public:
 
 		do {
 
-			if (getScore() < leadingScore && leadingScore < POINTSFORWIN && 
+			if (leadingScore < POINTSFORWIN && 
+				getScore() + currentTurnPoints > leadingScore &&
 				(currentTurnPoints > 1000 && info_in.dice.size() <= 3) ||
 				(currentTurnPoints > 300 && info_in.dice.size() <= 2)) {
 
