@@ -7,8 +7,6 @@
 
 using namespace std;
 
-const int NUM_PLAYERS = 2;
-
 class Game {
 private:
 	vector<Player*> playerVector;
@@ -44,13 +42,37 @@ public:
 		}
 	}
 
-	void runTurn() {
+	void runTurn(int winningScore) {
 
-		currentRoller->getDice();
+		currentRoller->getDice(winningScore);
 
 		updateTurn();
 	}
 
+	Player* getCurrentPlayer() {
+		return currentRoller;
+	}
+
+	int getWinningScore() {
+		if (one->getScore() > two->getScore()) {
+			return one->getScore();
+		}
+		else {
+			return two->getScore();
+		}
+	}
+
+	void getWinner() {
+		if (one->getScore() > two->getScore()){
+			cout << one->getName();
+		}
+
+		else {
+			cout << two->getName();
+		}
+
+		cout << " Wins!!" << endl;
+	}
 };
 
 int main() {
@@ -107,15 +129,25 @@ int main() {
 
 	Game farkle(playerVector);
 
-	do {
+	int winningScore = farkle.getWinningScore();
+
+	do {	
+
 		farkle.printScore();
-		farkle.runTurn();
+		farkle.runTurn(winningScore);
 
-	} while (playerVector[0]->getScore() < 5000 && playerVector[1]->getScore() < 5000);
+		winningScore = farkle.getWinningScore();
 
-	//last chance mode!
+	} while (playerVector[0]->getScore() < POINTSFORWIN && playerVector[1]->getScore() < POINTSFORWIN);
 
+	cout << "LAST CHANCE!!!" << endl;
+
+	farkle.printScore();
+	farkle.runTurn(winningScore);
+
+	farkle.getWinner();
+
+	farkle.printScore();
 	
 	return 0;
 }
-

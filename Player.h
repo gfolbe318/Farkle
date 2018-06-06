@@ -9,6 +9,8 @@
 
 using namespace std;
 
+const int POINTSFORWIN = 2000;
+
 struct info {
 	vector<int> dice;
 	vector<int> selected;
@@ -30,7 +32,7 @@ struct pointHelper {
 
 
 class Player {
-protected:
+private:
 	string name;
 	int points;
 
@@ -132,7 +134,7 @@ public:
 
 	}
 
-	virtual void getDice() = 0;
+	virtual void getDice(int leadingScore) = 0;
 };
 
 class Human : public Player {
@@ -351,7 +353,7 @@ public:
 		info_in.numPoints = pointsScored;
 	}
 
-	virtual void getDice() {
+	virtual void getDice(int leadingScore) {
 		bool goodInput = false;
 		bool bank = false;
 		string input;
@@ -397,7 +399,7 @@ public:
 
 				string bankInput;
 
-				if (currentTurnPoints >= 300) {
+				if (currentTurnPoints >= 300 && leadingScore < POINTSFORWIN && getScore() + currentTurnPoints > leadingScore) {
 
 					do {
 
@@ -439,7 +441,7 @@ public:
 
 	Computer() : Player("Computer") {}
 
-	virtual void getDice() {
+	virtual void getDice(int leadingScore) {
 		info info_in;
 
 		bool stop = false;
@@ -448,7 +450,8 @@ public:
 
 		do {
 
-			if ((currentTurnPoints > 1000 && info_in.dice.size() <= 3) ||
+			if (getScore() < leadingScore && leadingScore < POINTSFORWIN && 
+				(currentTurnPoints > 1000 && info_in.dice.size() <= 3) ||
 				(currentTurnPoints > 300 && info_in.dice.size() <= 2)) {
 
 				cout << getName() << " banked " << currentTurnPoints << "!" << endl << endl;
