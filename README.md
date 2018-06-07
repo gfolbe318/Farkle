@@ -1,7 +1,7 @@
 Welcome to Farkle! To select dice, separate your inputs by commas followed by a space.
 For example, to select dice #2, #4, #5, enter the following input when prompted: 2, 4, 5
 Input is very sensitive to format. If formatted incorrectly, you will be reprompted
-Scoring summaries are as follows:
+Scoring summaries are as follows:\n
 	Six of a kind: 3000
 	Five of a kind: 2000
 	Four of a kind: 1500
@@ -22,4 +22,4 @@ will be prompted to select dice. The dice selected will count towards your score
 remaining dice will be re-rolled. If your current turn generates more than 300 points, you will 
 have the option to bank these points. A roll generating 0 points is called a FARKLE, and
 will cause you to lose all of your points gathered in that roll. The first to 10000 points is
-the winner. Have fun, and good luck!" << endl << endl;
+the winner. Have fun, and good luck!"
