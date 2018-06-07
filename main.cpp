@@ -14,6 +14,7 @@ void getPlayers(vector<Player*>& playerVector);
 
 int main() {
 
+	//For random dice
 	srand(time(NULL));
 
 	vector<Player*> playerVector;
@@ -21,18 +22,21 @@ int main() {
 	printOpening();
 	getPlayers(playerVector);
 
+	//Initialize game with the players inputted
 	Game farkle(playerVector);
 
+	//Used to keep track of the winning score (useful when score exceeds 10000
 	int winningScore = farkle.getWinningScore();
 
+	//Loop until 10000 is broken
 	do {	
-
 		farkle.printScore();
 		farkle.runTurn(winningScore);
 		winningScore = farkle.getWinningScore();
 
 	} while (playerVector[0]->getScore() < POINTSFORWIN && playerVector[1]->getScore() < POINTSFORWIN);
 
+	//Give player one more chance to catch up
 	cout << "LAST CHANCE!!!" << endl << endl;
 
 	farkle.printScore();
@@ -81,11 +85,13 @@ void getPlayers(vector<Player*>& playerVector) {
 	string playerNameOne;
 	string playerNameTwo;
 
+	//Player One is always human
 	cout << "Please enter the name of Player One: ";
 	getline(cin, playerNameOne);
 	Player* playerOne = new Human(playerNameOne);
 	playerVector[0] = playerOne;
 
+	//Determine whether or not to create a computer player2
 	string answer;
 	do {
 		cout << "Are you playing with a friend? Please enter \"Yes\" or \"No\" (enter \"No\" to play against the computer): ";
@@ -98,22 +104,27 @@ void getPlayers(vector<Player*>& playerVector) {
 	} while (answer != "Yes" && answer != "yes" && answer != "No" && answer != "no");
 
 	if (answer == "No" || answer == "no") {
+		
+		//Create a computer player
 		Computer* playerTwo = new Computer();
 		playerVector[1] = playerTwo;
 	}
 
 	else {
 
+		//Create a human player2
 		do {
 			cout << "Please enter the name of Player Two: ";
 			getline(cin, playerNameTwo);
 
 			if (playerNameOne == playerNameTwo) {
+				//Just for debugging purposes and for better user experience
 				cout << "Please ensure that the names of the players are distinct. Try again." << endl;
 			}
 
 		} while (playerNameOne == playerNameTwo);
 
+		//Create player2 as a human with the name passed in
 		Player* playerTwo = new Human(playerNameTwo);
 		playerVector[1] = playerTwo;
 	}
