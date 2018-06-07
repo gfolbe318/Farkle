@@ -19,6 +19,8 @@ void Game::updateTurn() {
 
 void Game::printScore() {
 	cout << "SCOREBOARD:" << endl;
+
+	//Print score in order
 	if (one->getScore() >= two->getScore()) {
 		cout << one->getName() << ": " << one->getScore() << endl;
 		cout << two->getName() << ": " << two->getScore() << endl;
