@@ -1,7 +1,7 @@
 Welcome to Farkle! To select dice, separate your inputs by commas followed by a space.
 For example, to select dice #2, #4, #5, enter the following input when prompted: 2, 4, 5
 Input is very sensitive to format. If formatted incorrectly, you will be reprompted
-Scoring summaries are as follows:\n
+Scoring summaries are as follows:
 	Six of a kind: 3000
 	Five of a kind: 2000
 	Four of a kind: 1500
